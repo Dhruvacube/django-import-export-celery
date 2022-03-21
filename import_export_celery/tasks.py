@@ -12,7 +12,7 @@ from django.core.mail import send_mail
 
 from django.urls import reverse
 from django.utils.encoding import force_text
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 
 from import_export.formats.base_formats import DEFAULT_FORMATS
 
