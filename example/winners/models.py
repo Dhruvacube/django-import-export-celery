@@ -1,12 +1,16 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 from import_export.resources import ModelResource
 from import_export.fields import Field
 
 
 class Winner(models.Model):
-    name = models.CharField(max_length=80, null=False, blank=False, default="",)
+    name = models.CharField(
+        max_length=80,
+        null=False,
+        blank=False,
+        default="",
+    )
 
     @classmethod
     def export_resource_classes(cls):
@@ -22,6 +26,10 @@ class Winner(models.Model):
 class WinnersResource(ModelResource):
     class Meta:
         model = Winner
+
+    def get_export_queryset(self):
+        """To customise the queryset of the model resource with annotation override"""
+        return self.Meta.model.objects.all()
 
 
 class WinnersWithAllCapsResource(WinnersResource):

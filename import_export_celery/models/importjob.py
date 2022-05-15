@@ -1,25 +1,9 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (C) 2019 o.s. Auto*Mat
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
 from django.utils import timezone
 
 from author.decorators import with_author
 
-from django.conf import settings
 from django.db import models, transaction
 from django.dispatch import receiver
 
@@ -56,7 +40,8 @@ class ImportJob(models.Model):
     )
 
     format = models.CharField(
-        verbose_name=_("Format of file to be imported"), max_length=255,
+        verbose_name=_("Format of file to be imported"),
+        max_length=255,
     )
 
     change_summary = models.FileField(
@@ -66,23 +51,25 @@ class ImportJob(models.Model):
         null=True,
     )
 
-    errors = models.TextField(default="", blank=True,)
+    errors = models.TextField(
+        default="",
+        blank=True,
+    )
 
     model = models.CharField(
         verbose_name=_("Name of model to import to"),
         max_length=160,
-        choices=[
-            (x, x) for x in getattr(settings, "IMPORT_EXPORT_CELERY_MODELS", {}).keys()
-        ],
     )
 
     job_status = models.CharField(
-        verbose_name=_("Status of the job"), max_length=160, blank=True,
+        verbose_name=_("Status of the job"),
+        max_length=160,
+        blank=True,
     )
 
     @staticmethod
     def get_format_choices():
-        """ returns choices of available import formats """
+        """returns choices of available import formats"""
         return [
             (f.CONTENT_TYPE, f().get_title())
             for f in DEFAULT_FORMATS

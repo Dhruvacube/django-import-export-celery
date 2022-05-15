@@ -1,3 +1,6 @@
+.. image:: https://img.shields.io/pypi/v/django-import-export-celery.svg
+   :target: https://pypi.org/manage/project/django-import-export-celery/releases/
+
 django-import-export-celery: process slow django imports and exports in celery
 ==============================================================================
 
@@ -61,7 +64,7 @@ You will find an example django application that uses django-import-export-celer
 
    .. image:: screenshots/import_jobs.png
 
-3. Create a new import job. There is an example import CSV file in the example/example-data directory. Select that file. Select csv as the file format. We'll be importing to the Winner's model table. 
+3. Create a new import job. There is an example import CSV file in the example/example-data directory. Select that file. Select csv as the file format. We'll be importing to the Winner's model table.
 
    .. image:: screenshots/new_import_job.png
 
@@ -118,7 +121,18 @@ As with imports, a fully configured example project can be found in the `example
                 create_export_job_action,
             )
 
-3. Done!
+3. To customise export queryset you need to add `get_export_queryset` to the `ModelResource`.
+    ::
+
+        class WinnersResource(ModelResource):
+            class Meta:
+                model = Winner
+
+            def get_export_queryset(self):
+                """To customise the queryset of the model resource with annotation override"""
+                return self.Meta.model.objects.annotate(device_type=Subquery(FCMDevice.objects.filter(
+                        user=OuterRef("pk")).values("type")[:1])
+4. Done!
 
 Performing exports with celery
 ------------------------------
@@ -135,4 +149,7 @@ Performing exports with celery
 
 6. Click on the link near the bottom of the page titled `Exported file`.
 
+Credits
+-------
 
+`django-import-export-celery` was developed by the Czech non-profit `auto*mat z.s. <https://auto-mat.cz>`_.
